@@ -448,3 +448,7 @@ void Find_Position(struct Node* pHead)
 		}
 	}
 }
+
+
+
+// Здесь есть исправления!!!
