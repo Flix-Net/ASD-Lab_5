@@ -1,0 +1,119 @@
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int value;
+	Node* next;
+};
+
+
+Node* Fill_List(struct Node* pHead);
+void Print_List(struct Node* pHead);
+Node* Add_List(struct Node* pHead);
+
+int main()
+{
+	setlocale(0, "");
+
+	Node* pHead = new(Node);	
+	pHead->value = NULL;
+	pHead->next = NULL;
+	int cin_menu = 0;
+	
+	menu: cout << "1 - заполнение;\n"
+		<< "2 - вывод;\n"
+		<< "3 - Добевление\n"
+		<< "Выбор: ";
+	cin >> cin_menu;
+
+	switch (cin_menu)
+	{
+
+		case 1:
+		{
+			Fill_List(pHead);
+			goto menu;
+		}
+		
+		case 2:
+		{
+			Print_List(pHead);
+			goto menu;
+		}
+
+		case 3:
+		{
+			Add_List(pHead);
+			goto menu;
+		}
+	
+	}
+
+	
+
+	return 0;
+}
+
+Node* Fill_List(struct Node*pHead)
+{
+	int size = 0; bool this_first_value = true;
+	cout << "Сколько элементов нужно добавить в список?\t"; cin >> size;
+
+	Node* t = new(Node);
+
+	for (int i = 0; i < size; i++)
+	{
+		if (this_first_value)
+		{
+			cout << "Введите значение: "; 
+			cin >> t->value;
+			t->next = new(Node);
+			pHead->next = t;
+			t = t->next;
+			this_first_value = false;
+		}
+		else
+		{
+			cout << "Введите значение: ";
+			cin >> t->value;
+			if (i == size - 1)
+			{
+				t->next = NULL;
+			}
+			else
+			{
+				t->next = new(Node);
+				t = t->next;
+			}
+		}
+	}
+	return pHead->next;
+}
+
+void Print_List(struct Node* pHead)
+{
+	Node* t; t = pHead->next;
+
+	for (;t!= NULL; t = t->next)
+	{
+		cout << "Значение = " << t->value << "\tАдрес = " << t << endl;
+	}
+}
+
+Node* Add_List(struct Node* pHead)
+{
+	Node* t; 
+	for (t = pHead->next; t!=NULL;t = t->next)
+	{
+		if (t->next == NULL)
+		{
+			t->next = new(Node);
+			t = t->next;
+			cout << "Введите значение: "; cin >> t->value;
+			t->next = NULL;
+			cout << "\n\t\tЭлемент Добавлен!\n\n";
+		}
+	}
+	return pHead;
+}
