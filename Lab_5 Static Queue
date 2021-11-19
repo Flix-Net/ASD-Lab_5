@@ -187,8 +187,8 @@ void Queue_Print(int &Head, int &Tail, struct Node Arr_Queue[], int& position)
 			{
 				cout << i + 1 << " элемент = " << Arr_Queue[i].value << "\tПозиция = " << i << "\tЕго ключ = " << Arr_Queue[i].key << endl;
 			}
-			cout << "\n\t\tПервый элемент на позиции " << Head << endl;
-			cout << "\n\t\tПоследний элемент на позиции " << Tail << endl;
+			cout << "\n\t\tПервый элемент на позиции    " << Head << " ==> " << Arr_Queue[Head].value << endl;
+			cout << "\n\t\tПоследний элемент на позиции " << Tail << " ==> " << Arr_Queue[Tail].value << endl;
 			cout << "\n\t\tКоличество элементов " << position << endl << endl;
 		}
 	}
@@ -332,4 +332,3 @@ int Queue_Destroy(int &Head, int &Tail, struct Node Arr_Queue[], int& position)
 	}
 	return Head;
 }
-
