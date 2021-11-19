@@ -1,0 +1,450 @@
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int value;
+	Node* next;
+	int key;
+};
+
+
+Node* Queue_Add(struct Node* pHead, struct Node* pTail, int& count, int& Last_Del_Key);
+void Queue_Print(struct Node* pHead, struct Node* pTail, int& count);
+Node* Queue_Del(struct Node* pHead, struct Node* pTail, int& count, int& Last_Del_Key);
+Node* Queue_Clear(struct Node* pHead, int& count);
+Node* Queue_Destroy(struct Node* pHead, struct Node* pTail);
+Node* Circle_Queue(struct Node* pHead, struct Node* pTail);
+void Find_Key(struct Node* phead);
+void Find_Position(struct Node* pHead);
+
+int main()
+{
+	setlocale(0, "");
+
+	Node* pHead = NULL;
+	Node* pTail = NULL;
+
+	int count = 0;
+	int* pcount = &count;
+	int Last_Del_Key = 0;
+	int* pLast_Del_Key = &Last_Del_Key;
+
+
+menu: int menu_value = 0;
+	cout << "1 - Создание очереди;\n"
+		<< "2 - Вывод очереди на экран;\n"
+		<< "3 - Добавить в очередь\n"
+		<< "4 - Удалить из очереди\n"
+		<< "5 - В конец очереди (кольцевая очередь)\n"
+		<< "6 - Очистить очередь\n"
+		<< "7 - Уничтожить очередь\n"
+		<< "8 - Поиск по ключу\n"
+		<< "9 - Поиск позиции по значению\n"
+		<< "Выбор: "; cin >> menu_value;
+
+	switch (menu_value)
+	{
+	case 1:
+	{
+		pHead = new (Node);
+		pHead->next = NULL;
+
+
+
+		system("cls");
+		cout << "\n\n\tОчередь создана!\n" << endl;
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 2:
+	{
+		system("cls");
+		Queue_Print(pHead, pTail, *pcount);
+
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 3:
+	{
+		system("cls");
+		pTail = Queue_Add(pHead, pTail, *pcount, *pLast_Del_Key);
+
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 4:
+	{
+		system("cls");
+		pHead = Queue_Del(pHead, pTail, *pcount, *pLast_Del_Key);
+		if (pHead !=NULL)
+		{
+			if (pHead->next == NULL)
+			{
+				pTail = NULL;
+			}
+		}
+		
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 5:
+	{
+		system("cls");
+		pTail = Circle_Queue(pHead, pTail);
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 6:
+	{
+		system("cls");
+		pHead = Queue_Clear(pHead, *pcount);
+		if (pHead !=NULL)
+		{
+			if (pHead->next == NULL)
+			{
+				pTail = NULL;
+			}
+			
+		}
+
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 7:
+	{
+		system("cls");
+		pHead = Queue_Destroy(pHead, pTail);
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 8:
+	{
+		system("cls");
+		Find_Key(pHead);
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	case 9:
+	{
+		system("cls");
+		Find_Position(pHead);
+		system("pause");
+		system("cls");
+		goto menu;
+	}
+
+	default:
+	{
+
+		if (!(pHead == NULL))
+		{
+			if (!(pHead->next == NULL))
+			{
+				Queue_Clear(pHead, *pcount);
+			}
+			Queue_Destroy(pHead, pTail);
+		}
+		cout << "Происходит выход..." << endl;
+		system("pause");
+	}
+	}
+
+	return 0;
+}
+
+void Queue_Print(struct Node* pHead, struct Node* pTail, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tОчередь не создана!\n\n";
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tОчередь пустая!\n" << endl;
+		}
+		else
+		{
+			Node* t;
+			for (t = pHead->next; t != NULL; t = t->next)
+			{
+				cout << "Значение равно = " << t->value
+					<< "\tЕго адрес = " << &*t
+					<< "\tЕго ключ = " << t->key << endl;
+			}
+		}
+		cout << "\n\t\tАдрес первого элемента    = " << pHead->next << endl << endl;
+		cout << "\n\t\tАдрес последнего элемента = " << pTail << endl << endl;
+		cout << "\n\t\tКоличество элементов в очереди  = " << count << endl << endl;
+	}
+}
+
+Node* Queue_Add(struct Node* pHead, struct Node* pTail, int& count, int& Last_Del_Key)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\tСначала необходимо создать очередь!\n\n";
+	}
+	else
+	{
+		Node* t;
+
+		if (pHead->next == NULL)
+		{
+			
+			count++;
+			t = new (Node);
+			cout << "Введите значение: "; cin >> t->value;
+			t->next = NULL;
+			t->key = count + 100;
+			pHead->next = t;
+			pTail = t;
+
+		}
+		else
+		{
+			count++;
+			t = pTail;
+			t->next = new (Node);
+			t = t->next;
+			cout << "Введите значение: "; cin >> t->value;
+			t->next = NULL;
+
+			if (Last_Del_Key == NULL)
+			{
+				t->key = count + 100;
+			}
+			else
+			{
+				t->key = Last_Del_Key;
+				Last_Del_Key = 0;
+			}
+
+
+			pTail = t;
+
+		}
+	}
+	return pTail;
+}
+
+Node* Queue_Del(struct Node* pHead, struct Node* pTail, int& count, int& Last_Del_Key)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tОчередь не создана!\n\n";
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tОчередь пустая!\n" << endl;
+		}
+		else
+		{
+			Node* t;
+			t = pHead->next;
+
+			cout << "\n\tЗначение удаляемого элемента = " << t->value;
+			cout << "\n\n\t\tЕго адрес = " << t << endl;
+			cout << "\n\t\tЕго ключ = " << t->key << endl << endl;
+
+			if (pTail == pHead->next)
+			{
+				pHead->next = t->next;
+				pTail = pHead->next;
+				count--;
+				Last_Del_Key = t->key;
+			}
+			else
+			{
+				pHead->next = t->next;
+				count--;
+				Last_Del_Key = t->key;
+			}
+			delete t;
+			t = nullptr;
+		}
+	}
+	return pHead;
+}
+
+Node* Queue_Clear(struct Node* pHead, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте очередь!\n" << endl;
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tОчередь пустая,очищать нечего!\n" << endl;
+		}
+		else
+		{
+			Node* t;
+			while (pHead->next != NULL)
+			{
+				t = pHead->next;
+				pHead->next = t->next;
+				delete t;
+				count--;
+			}
+			cout << "\n\t\tОчистка очереди завершена!\n\n";
+		}
+	}
+	return pHead;
+}
+
+Node* Queue_Destroy(struct Node* pHead, struct Node* pTail)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tРазрушать нечего!\n" << endl;
+	}
+	else
+	{
+		if (!(pHead->next == NULL))
+		{
+			cout << "\n\t\tСначала очистите очередь!\n" << endl;
+		}
+		else
+		{
+			delete pHead;
+			delete pTail;
+			pHead = nullptr;
+			pTail = nullptr;
+			cout << "\n\t\tОчередь разрушена!\n" << endl;
+		}
+	}
+	return pHead;
+}
+
+Node* Circle_Queue(struct Node* pHead, struct Node* pTail)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tОчередь не создана!\n\n";
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tОчередь пустая!\n" << endl;
+		}
+		else
+		{
+			if (pHead->next == pTail)
+			{
+				cout << "\n\t\tВ очереди всего один элемент.\n\n";
+			}
+			else
+			{
+				Node* t;
+				t = pHead->next;
+
+				cout << "\n\tВ конец отправляется элемент = " << t->value;
+				cout << "\n\n\t\tЕго адрес = " << t << endl;
+
+				pHead->next = t->next;
+				pTail->next = t;
+				pTail = t;
+				pTail->next = NULL;
+			}
+		}
+	}
+	return pTail;
+}
+
+void Find_Key(struct Node* pHead)
+{
+
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте очередь!" << endl;
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tОчередь пустая!" << endl;
+		}
+		else
+		{
+			int cin_key = 0;
+			bool already = false;
+			cout << "Введите ключ = "; cin >> cin_key;
+			Node* t;
+			t = pHead->next;
+			for (; t != NULL; t = t->next)
+			{
+				if (t->key == cin_key)
+				{
+					cout << "\n\t\tЗначение найдено!\n\n\t\tАдрес = " << t
+						<< "\n\n\t\tЗначение = " << t->value << endl << endl;
+					already = true;
+				}
+			}
+			if (!already)
+			{
+				cout << "\n\tЗначения по ключу не найдено!\n" << endl;
+			}
+		}
+	}
+
+}
+
+void Find_Position(struct Node* pHead)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте очередь!\n\n";
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tОчередь пустая!\n\n";
+		}
+		else
+		{
+			Node* t;
+			int cin_value;
+			bool already = false;
+			cout << "Введите значение: "; cin >> cin_value;
+			for (t = pHead->next; t != NULL; t = t->next)
+			{
+				if (t->value == cin_value)
+				{
+					cout << "\n\t\tЗначение найдено!\n\n"
+						<< "\t\tЕго адрес = " << t
+						<< "\n\n\t\tЕго ключ  = " << t->key << endl << endl;
+					already = true;
+				}
+			}
+			if (!already)
+			{
+				cout << "\n\t\tЗначение не найдено!" << endl << endl;
+			}
+		}
+	}
+}
