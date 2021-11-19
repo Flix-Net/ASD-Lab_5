@@ -1,0 +1,335 @@
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+	int value;
+	int key;
+};
+
+int  Queue_Add(int &Head, int &Tail, struct Node Arr_Queue[], int& position, const int size, int& Last_Del_Key);
+void Queue_Print(int &Head, int &Tail, struct Node Arr_Queue[], int& position);
+int  Queue_Del(int &Head, int &Tail, struct Node Arr_Queue[], int& position, int& Last_Del_Key);
+int  Circle_Queue(int &Head, int &Tail, struct Node Arr_Queue[], int& position);
+int  Queue_Clear(int &Head, int &Tail, struct Node Arr_Queue[], int& position);
+int  Queue_Destroy(int &Head, int &Tail, struct Node Arr_Queue[], int& position);
+
+int main()
+{
+	setlocale(0, "");
+
+	const int size = 5;
+	Node Arr_Queue[size]{};
+
+	int Head = (-997);
+	int Tail = (-997);
+
+	int* pHead = &Head;
+	int* pTail = &Tail;
+
+	int Last_Del_Key = 0;
+	int* pLast_Del_Key = &Last_Del_Key;
+
+	int position = 0;
+	int* pposition = &position;
+
+
+menu: int menu_value = 0;
+	cout << "1 - Создание очереди;\n"
+		<< "2 - Вывод очереди на экран;\n"
+		<< "3 - Добавить в очередь\n"
+		<< "4 - Удалить из очереди\n"
+		<< "5 - В конец очереди (кольцевая очередь)\n"
+		<< "6 - Очистить очередь\n"
+		<< "7 - Уничтожить очередь\n"
+		<< "Выбор: "; cin >> menu_value;
+
+	switch (menu_value)
+	{
+		case 1:
+		{
+			Head = (-996);
+			Tail = (-996);
+	
+
+			system("cls");
+			cout << "\n\n\tОчередь создана!\n" << endl;
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 2:
+		{
+			system("cls");
+			Queue_Print(*pHead, *pTail, Arr_Queue, *pposition);
+
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 3:
+		{
+			system("cls");
+			Queue_Add(*pHead, *pTail, Arr_Queue, *pposition, size, *pLast_Del_Key);
+
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 4:
+		{
+			system("cls");
+			Queue_Del(*pHead, *pTail, Arr_Queue, *pposition, *pLast_Del_Key);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 5:
+		{
+			system("cls");
+			Circle_Queue(*pHead, *pTail, Arr_Queue, *pposition);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 6:
+		{
+			system("cls");
+			Queue_Clear(*pHead, *pTail, Arr_Queue, *pposition);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 7:
+		{
+			system("cls");
+			Head = Queue_Destroy(*pHead, *pTail, Arr_Queue, *pposition);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+
+		default:
+		{
+			cout << "Происходит выход..." << endl;
+			system("pause");
+		}
+
+	}
+
+	return 0;
+}
+
+int Queue_Add(int &Head, int &Tail, struct Node Arr_Queue[], int& position, const int size, int& Last_Del_Key)
+{
+	if (Head == (-997))
+	{
+		cout << "\n\t\tСоздайте очередь!\n\n";
+	}
+	else
+	{
+		if (position == size)
+		{
+			cout << "\n\t\tОчередь переполненная!\n\n";
+		}
+		else
+		{
+			cout << "Введите значение: ";
+			cin >> Arr_Queue[position].value;
+			if (Last_Del_Key != 0)
+			{
+				Arr_Queue[position].key = Last_Del_Key;
+				Last_Del_Key = 0;
+			}
+			else
+			{
+				Arr_Queue[position].key = 100 + position;
+			}
+
+
+			if (position == 0)
+			{
+				Head = position;
+				Tail = position;
+			}
+			else
+			{
+				Tail = position;
+			}
+			position++;
+		}
+	}
+	return 0;
+}
+
+void Queue_Print(int &Head, int &Tail, struct Node Arr_Queue[], int& position)
+{
+	if (Head == (-997))
+	{
+		cout << "\n\t\tСоздайте очередь!\n\n";
+	}
+	else
+	{
+		if (Head == (-996))
+		{
+			cout << "\n\t\tОчередь пустая, выводить нечего!\n\n";
+		}
+		else
+		{
+			for (int i = 0; i < position; i++)
+			{
+				cout << i + 1 << " элемент = " << Arr_Queue[i].value << "\tПозиция = " << i << "\tЕго ключ = " << Arr_Queue[i].key << endl;
+			}
+			cout << "\n\t\tПервый элемент на позиции " << Head << endl;
+			cout << "\n\t\tПоследний элемент на позиции " << Tail << endl;
+			cout << "\n\t\tКоличество элементов " << position << endl << endl;
+		}
+	}
+}
+
+int Queue_Del(int &Head, int &Tail, struct Node Arr_Queue[], int& position, int& Last_Del_Key)
+{
+	if (Head == (-997))
+	{
+		cout << "\n\t\tСоздайте очередь!\n\n";
+	}
+	else
+	{
+		if (Head == (-996))
+		{
+			cout << "\n\t\tОчередь пустая, удалять нечего!\n\n";
+		}
+		else
+		{
+
+			cout << "\t\tУдаление узла \n\t\tЕго значение = "
+				<< Arr_Queue[0].value << "\n\t\tЕго ключ = "
+				<< Arr_Queue[0].key << endl;
+
+			if (Head == Tail)
+			{
+				Last_Del_Key = Arr_Queue[0].key;
+				Arr_Queue[0].value = NULL;
+				Arr_Queue[0].key = NULL;
+				Head = (-996);
+				Tail = (-996);
+				position--;
+				cout << "\n\t\tУдаление завершено!\n\n";
+			}
+			else
+			{
+				Last_Del_Key = Arr_Queue[0].key;
+				for (int i = 0; i < position - 1; i++)
+				{
+					Arr_Queue[i] = Arr_Queue[i + 1];
+				}
+				cout << "\n\t\tУдаление завершено!\n\n";
+				Arr_Queue[position - 1].value = NULL;
+				Arr_Queue[position - 1].key = NULL;
+				position--;
+				Tail = position - 1;
+			}
+		}
+	}
+	return 0;
+}
+
+int Circle_Queue(int &Head, int &Tail, struct Node Arr_Queue[], int& position)
+{
+	if (Head == (-997))
+	{
+		cout << "\n\t\tСоздайте очередь!\n\n";
+	}
+	else
+	{
+		if (Head == (-996))
+		{
+			cout << "\n\t\tОчередь пустая\n\n";
+		}
+		else
+		{
+			if (Head == Tail)
+			{
+				cout << "\n\t\tВ очереди всего один элемент.\n\n";
+			}
+			else
+			{
+				Node* t = new(Node);
+
+				t->value = Arr_Queue[0].value;
+				t->key = Arr_Queue[0].key;
+				for (int i = 0; i < position - 1; i++)
+				{
+					Arr_Queue[i] = Arr_Queue[i + 1];
+				}
+				Arr_Queue[position - 1].value = t->value;
+				Arr_Queue[position - 1].key = t->key;
+				delete t;
+				t = nullptr;
+			}
+
+		}
+	}
+	return 0;
+}
+
+int Queue_Clear(int &Head, int &Tail, struct Node Arr_Queue[], int& position)
+{
+	if (Head == (-997))
+	{
+		cout << "\n\t\tСоздайте очередь!\n\n";
+	}
+	else
+	{
+		if (Head == (-996))
+		{
+			cout << "\n\t\tОчередь пустая, удалять нечего!\n\n";
+		}
+		else
+		{
+
+			for (int i = 0; i < position; i++)
+			{
+				Arr_Queue[i].value = NULL;
+				Arr_Queue[i].key = NULL;
+			}
+			position = NULL;
+			Head = (-996);
+			Tail = (-996);
+			cout << "\n\t\tОчистка очереди завершена!\n\n";
+		}
+	}
+	return 0;
+}
+
+int Queue_Destroy(int &Head, int &Tail, struct Node Arr_Queue[], int& position)
+{
+	if (Head == (-997))
+	{
+		cout << "\n\t\tСоздайте очередь!\n\n";
+	}
+	else
+	{
+		if (!(Head == (-996)))
+		{
+			cout << "\n\t\tСначала очистите очередь!\n\n";
+		}
+		else
+		{
+			Head = (-997);
+			Tail = (-997);
+			
+			cout << "\n\t\tОчередь разрушена!\n" << endl;
+
+		}
+	}
+	return Head;
+}
+
