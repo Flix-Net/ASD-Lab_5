@@ -5,47 +5,104 @@ struct Node
 {
 	int value;
 	Node* next;
+	int position;
 };
 
 
-Node* Fill_List(struct Node* pHead);
-void Print_List(struct Node* pHead);
-Node* Add_List(struct Node* pHead);
+Node* Add_Tail_List(struct Node* pHead, int& count);
+void Print_List(struct Node* pHead,int &count);
+Node* Add_List_Position(struct Node* pHead, int& count);
+Node* Refresh_Position(struct Node* pHead);
+Node* Add_List_Before(struct Node* pHead, int& count);
+Node* Add_List_After(struct Node* pHead, int& count);
+
 
 int main()
 {
 	setlocale(0, "");
 
-	Node* pHead = new(Node);	
-	pHead->value = NULL;
-	pHead->next = NULL;
+	Node* pHead = NULL;
+
+	int count = 0;
+	int* pcount = &count;
+
 	int cin_menu = 0;
 	
-	menu: cout << "1 - заполнение;\n"
-		<< "2 - вывод;\n"
-		<< "3 - Добевление\n"
-		<< "Выбор: ";
-	cin >> cin_menu;
+	menu: cout << "1 - Создание списка;\n"
+			<< "2 - Вывод списка;\n"
+			<< "3 - Добавление в конец списка;\n"
+			<< "4 - Добавление по позиции;\n"
+			<< "5 - Добавление перед элементом;\n"
+			<< "6 - Добавление после элемента;\n"
+			<< "Выбор: ";
+			cin >> cin_menu;
+
 
 	switch (cin_menu)
 	{
 
 		case 1:
+
 		{
-			Fill_List(pHead);
+			pHead = new (Node);
+			pHead->value = NULL;
+			pHead->next = NULL;
+			pHead->position = NULL;
+			cout << "\n\t\tСписок создан!\n\n";
+			system("pause");
+			system("cls");
 			goto menu;
 		}
 		
 		case 2:
 		{
-			Print_List(pHead);
+			system("cls");
+			Print_List(pHead,*pcount);
+			system("pause");
+			system("cls");
 			goto menu;
 		}
 
 		case 3:
 		{
-			Add_List(pHead);
+			system("cls");
+			Add_Tail_List(pHead,*pcount);
+			system("pause");
+			system("cls");
 			goto menu;
+		}
+
+		case 4:
+		{
+			system("cls");
+			Add_List_Position(pHead, *pcount);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 5:
+		{
+			system("cls");
+			Add_List_Before(pHead, *pcount);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 6:
+		{
+			system("cls");
+			Add_List_After(pHead, *pcount);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		default:
+		{
+			cout << "Происходит выход...\n";
+			system("pause");
 		}
 	
 	}
@@ -55,65 +112,261 @@ int main()
 	return 0;
 }
 
-Node* Fill_List(struct Node*pHead)
+
+
+void Print_List(struct Node* pHead, int &count)
 {
-	int size = 0; bool this_first_value = true;
-	cout << "Сколько элементов нужно добавить в список?\t"; cin >> size;
 
-	Node* t = new(Node);
-
-	for (int i = 0; i < size; i++)
+	if (pHead == NULL)
 	{
-		if (this_first_value)
+		cout << "\n\t\tСписок не создан!\n\n";
+	}
+	else
+	{
+		if (pHead->next == NULL)
 		{
-			cout << "Введите значение: "; 
-			cin >> t->value;
-			t->next = new(Node);
-			pHead->next = t;
-			t = t->next;
-			this_first_value = false;
+			cout << "\n\t\tСписок пустой!\n" << endl;
 		}
 		else
 		{
-			cout << "Введите значение: ";
-			cin >> t->value;
-			if (i == size - 1)
+			Node* t;
+			t = pHead->next;
+
+			for (; t != NULL; t = t->next)
 			{
-				t->next = NULL;
+				cout << "Значение = " << t->value << "\tПозиция " << t->position << "\tАдрес = " << t << endl;
+			}
+			cout << "\n\tКоличество элементов в списке = " << count << endl << endl;
+		}
+	}
+}
+
+Node* Refresh_Position(struct Node* pHead)
+{
+	Node* t;
+	int i = 0;
+	for (t = pHead->next, i = 0; t != NULL; t = t->next, i++)
+	{
+		t->position = i;
+	}
+	return 0;
+}
+
+Node* Add_Tail_List(struct Node* pHead, int &count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте список!\n" << endl;
+	}
+	else
+	{
+		Node* t;
+		if (pHead->next == NULL)
+		{
+			t = new (Node);
+			cout << "Введите значение: "; cin >> t->value;
+			t->position = count;
+			t->next = NULL;
+			pHead->next = t;
+			count++;
+		}
+		else
+		{
+			for (t = pHead->next; t != NULL; t = t->next)
+			{
+				if (t->next == NULL)
+				{
+					count++;
+					t->next = new (Node);
+					t = t->next;
+					cout << "Введите значение: "; cin >> t->value;
+					t->position = count - 1;
+					t->next = NULL;
+					cout << "\n\t\tЭлемент Добавлен!\n\n";
+					
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+Node* Add_List_Position(struct Node* pHead, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте список!\n" << endl;
+	}
+	else
+	{
+		int cin_position = 0;
+		bool position_true = false;
+		cout << "Введите позицию: "; cin >> cin_position;
+
+		Node* t;
+
+		if (cin_position == 0)
+		{
+			t = new (Node);
+			cout << "Введите значение: "; cin >> t->value;
+			t->next = pHead->next;
+			pHead->next = t;
+			count++;
+			Refresh_Position(pHead);
+		}
+		else
+		{
+			cin_position--;
+			for (t = pHead->next; t != NULL; t = t->next)
+			{
+				if (t->position == cin_position)
+				{
+					position_true = true;
+					break;
+				}
+			}
+			if (!position_true)
+			{
+				cout << "\n\t\tНевозможно добавить в указанную позицию!\n\n";
 			}
 			else
 			{
-				t->next = new(Node);
+				Node* q;
+				q = t->next;
+				t->next = new (Node);
 				t = t->next;
+				cout << "Введите значение: "; cin >> t->value;
+				t->next = q;
+				count++;
+				cout << "Добаление успешное!" << endl;
+				Refresh_Position(pHead);
 			}
 		}
 	}
-	return pHead->next;
+
+
+	
+
+	
+
+	return 0;
 }
 
-void Print_List(struct Node* pHead)
+Node* Add_List_Before(struct Node* pHead, int& count)
 {
-	Node* t; t = pHead->next;
-
-	for (;t!= NULL; t = t->next)
+	if (pHead == NULL)
 	{
-		cout << "Значение = " << t->value << "\tАдрес = " << t << endl;
+		cout << "\n\t\tСоздайте список!\n" << endl;
 	}
-}
-
-Node* Add_List(struct Node* pHead)
-{
-	Node* t; 
-	for (t = pHead->next; t!=NULL;t = t->next)
+	else
 	{
-		if (t->next == NULL)
+		int cin_value = 0;
+		Node* t;
+		bool value_find = false;
+
+		cout << "Укажите значение перед которым нужно добавить элемент: ";
+		cin >> cin_value;
+
+		for (t = pHead->next; t!=NULL; t = t->next)
 		{
-			t->next = new(Node);
-			t = t->next;
-			cout << "Введите значение: "; cin >> t->value;
-			t->next = NULL;
-			cout << "\n\t\tЭлемент Добавлен!\n\n";
+			if (t->value == cin_value)
+			{
+				value_find = true;
+				Node* q = t;
+
+				for (t = pHead->next; t != NULL; t = t->next)
+				{
+					if (t->next == q)
+					{
+						t->next = new(Node);
+						t = t->next;
+						cout << "Введите значение: "; cin >> t->value;
+						t->next = q;
+						count++;
+						Refresh_Position(pHead);
+						return 0;
+					}
+				}
+
+			}
+		}
+		if (value_find == false)
+		{
+			cout << "\n\t\tЗначение не найдено!\n\n";
 		}
 	}
-	return pHead;
+	return 0;
+}
+
+Node* Add_List_After(struct Node* pHead, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте список!\n" << endl;
+	}
+	else
+	{
+		int cin_value = 0;
+		Node* t;
+		bool value_find = false;
+
+		cout << "Укажите значение после которого нужно добавить элемент: ";
+		cin >> cin_value;
+
+		for (t = pHead->next; t != NULL; t = t->next)
+		{
+			if (t->value == cin_value)
+			{
+				value_find = true;
+				Node* q = t->next;
+
+				t->next = new(Node);
+				t = t->next;
+				cout << "Введите значение: "; cin >> t->value;
+				t->next = q;
+				count++;
+				Refresh_Position(pHead);
+				return 0;
+			}
+		}
+		if (value_find == false)
+		{
+			cout << "\n\t\tЗначение не найдено!\n\n";
+		}
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Node* Del_List(struct Node* pHead, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tОчередь не создана!\n\n";
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tОчередь пустая!\n" << endl;
+		}
+		else
+		{
+			
+		}
+	}
+	return 0;
 }
