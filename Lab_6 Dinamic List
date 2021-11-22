@@ -15,6 +15,10 @@ Node* Add_List_Position(struct Node* pHead, int& count);
 Node* Refresh_Position(struct Node* pHead);
 Node* Add_List_Before(struct Node* pHead, int& count);
 Node* Add_List_After(struct Node* pHead, int& count);
+Node* Dell_List_Position(struct Node* pHead, int& count);
+Node* Dell_List_Before(struct Node* pHead, int& count);
+Node* Find_Prev(struct Node* pHead, struct Node* t);
+Node* Dell_List_After(struct Node* pHead, int& count);
 
 
 int main()
@@ -30,10 +34,15 @@ int main()
 	
 	menu: cout << "1 - Создание списка;\n"
 			<< "2 - Вывод списка;\n"
+			<< "-------------------------------------\n"
 			<< "3 - Добавление в конец списка;\n"
 			<< "4 - Добавление по позиции;\n"
 			<< "5 - Добавление перед элементом;\n"
 			<< "6 - Добавление после элемента;\n"
+		<< "-------------------------------------\n"
+			<< "7 - Удаление по позиции;\n"
+			<< "8 - Удаление перед элементом;\n"
+			<< "9 - Удаление после элемента;\n"
 			<< "Выбор: ";
 			cin >> cin_menu;
 
@@ -99,6 +108,33 @@ int main()
 			goto menu;
 		}
 
+		case 7:
+		{
+			system("cls");
+			Dell_List_Position(pHead, *pcount);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 8:
+		{
+			system("cls");
+			Dell_List_Before(pHead, *pcount);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
+		case 9:
+		{
+			system("cls");
+			Dell_List_After(pHead, *pcount);
+			system("pause");
+			system("cls");
+			goto menu;
+		}
+
 		default:
 		{
 			cout << "Происходит выход...\n";
@@ -106,8 +142,6 @@ int main()
 		}
 	
 	}
-
-	
 
 	return 0;
 }
@@ -243,12 +277,6 @@ Node* Add_List_Position(struct Node* pHead, int& count)
 			}
 		}
 	}
-
-
-	
-
-	
-
 	return 0;
 }
 
@@ -274,20 +302,32 @@ Node* Add_List_Before(struct Node* pHead, int& count)
 				value_find = true;
 				Node* q = t;
 
-				for (t = pHead->next; t != NULL; t = t->next)
+				if (t->position == 0)
 				{
-					if (t->next == q)
+					t = new(Node);
+					cout << "Введите значение: "; cin >> t->value;
+					t->next = q;
+					pHead->next = t;
+					count++;
+					Refresh_Position(pHead);
+					return 0;
+				}
+				else
+				{
+					for (t = pHead->next; t != NULL; t = t->next)
 					{
-						t->next = new(Node);
-						t = t->next;
-						cout << "Введите значение: "; cin >> t->value;
-						t->next = q;
-						count++;
-						Refresh_Position(pHead);
-						return 0;
+						if (t->next == q)
+						{
+							t->next = new(Node);
+							t = t->next;
+							cout << "Введите значение: "; cin >> t->value;
+							t->next = q;
+							count++;
+							Refresh_Position(pHead);
+							return 0;
+						}
 					}
 				}
-
 			}
 		}
 		if (value_find == false)
@@ -337,13 +377,211 @@ Node* Add_List_After(struct Node* pHead, int& count)
 	return 0;
 }
 
+Node* Dell_List_Position(struct Node* pHead, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте список!\n" << endl;
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tСписок пуст!\n" << endl;
+		}
+		else
+		{
+			int cin_position = 0;
+			bool position_true = false;
+			cout << "Введите позицию: "; cin >> cin_position;
+
+			Node* t;
+
+			if (cin_position == 0)
+			{
+				t = pHead->next;
+				pHead->next = t->next;
+				delete t;
+				count--;
+				Refresh_Position(pHead);
+				return 0;
+			}
+			else
+			{
+				for (t = pHead->next; t != NULL; t = t->next)
+				{
+					if (t->position == cin_position)
+					{
+						position_true = true;
+						break;
+					}
+				}
+				if (!position_true)
+				{
+					cout << "\n\t\tПозиция не найдена!\n\n";
+				}
+				else
+				{
+					Node* q;
+					q = t;
+					for (t = pHead->next; t!= NULL; t = t->next)
+					{
+						if (t->next == q)
+						{
+							t->next = q->next;
+							delete q;
+							q = nullptr;
+							count--;
+							Refresh_Position(pHead);
+							cout << "\n\t\tУдаление успешно завершено!\n\n";
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+Node* Dell_List_Before(struct Node* pHead, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте список!\n" << endl;
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tСписок пуст!\n" << endl;
+		}
+		else
+		{
+			int cin_value = 0;
+			Node* t;
+			bool value_find = false;
+
+			cout << "Укажите значение перед которым нужно удалить элемент: ";
+			cin >> cin_value;
+
+			for (t = pHead->next; t !=NULL; t = t->next )
+			{
+				if (t->value == cin_value)
+				{
+					if (t->position == 0)
+					{
+						cout << "\n\t\tПеред указанным значением нет элемента!\n\n";
+						return 0;
+					}
+					else
+					{
+						Node* q = Find_Prev(pHead, t); // q запоминает адрес удаляемого элемента
+						cout << "\n\t\tУдаляемое значение = " << q->value
+							<< "\tЕго адрес = " << q << endl;
+
+						if (q->position == 0)
+						{
+							pHead->next = q->next;
+							delete q;
+							q = nullptr;
+							cout << "\n\t\tУдаление завернено!\n\n";
+							Refresh_Position(pHead);
+							count--;
+							return 0;
+						}
+						else
+						{
+							t = q;
+							t = Find_Prev(pHead, t);
+							t->next = q->next;
+							delete q;
+							q = nullptr;
+							Refresh_Position(pHead);
+							count--;
+							return 0;
+						}
+					}
+				}
+			}
+			if (value_find == false)
+			{
+				cout << "\n\t\tУказанное значение не найдено!\n\n";
+			}
+		}
+	}
+	return 0;
+}
+
+Node* Dell_List_After(struct Node* pHead, int& count)
+{
+	if (pHead == NULL)
+	{
+		cout << "\n\t\tСоздайте список!\n" << endl;
+	}
+	else
+	{
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tСписок пуст!\n" << endl;
+		}
+		else
+		{
+			int cin_value = 0;
+			Node* t;
+			bool value_find = false;
+
+			cout << "Укажите значение после которого нужно удалить элемент: ";
+			cin >> cin_value;
+
+			for (t = pHead->next; t!= NULL; t = t->next)
+			{
+				if (t->value == cin_value)
+				{
+					value_find = true;
+					if (t->next == NULL)
+					{
+						cout << "\n\t\tПосле этого значения нечего удалять!\n\n";
+						return 0;
+					}
+					else
+					{
+						Node* q = t;
+						t = t->next;
+						cout << "\n\t\tУдаляемое значение = " << t->value
+							<< "\tЕго адрес = " << t << endl;
+						q->next = t->next;
+						delete t;
+						t = nullptr;
+						count--;
+						cout << "\n\t\tУдаление завершено!\n\n";
+						Refresh_Position(pHead);
+						return 0;
+					}
+				}
+			}
+			if (value_find == false)
+			{
+				cout << "\n\t\tУказанное значение не найдено!\n\n";
+			}
+		}
+	}
+	return 0;
+}
 
 
 
 
-
-
-
+Node* Find_Prev(struct Node* pHead, struct Node *t)
+{
+	Node* q = t;
+	for (t = pHead->next; t != NULL; t = t->next)
+	{
+		if (t->next == q)
+		{
+			return t;
+		}
+	}
+}
 
 
 
