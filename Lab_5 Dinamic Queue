@@ -83,14 +83,14 @@ menu: int menu_value = 0;
 	{
 		system("cls");
 		pHead = Queue_Del(pHead, pTail, *pcount, *pLast_Del_Key);
-		if (pHead !=NULL)
+		if (pHead != NULL)
 		{
 			if (pHead->next == NULL)
 			{
 				pTail = NULL;
 			}
 		}
-		
+
 		system("pause");
 		system("cls");
 		goto menu;
@@ -109,13 +109,13 @@ menu: int menu_value = 0;
 	{
 		system("cls");
 		pHead = Queue_Clear(pHead, *pcount);
-		if (pHead !=NULL)
+		if (pHead != NULL)
 		{
 			if (pHead->next == NULL)
 			{
 				pTail = NULL;
 			}
-			
+
 		}
 
 		system("pause");
@@ -184,16 +184,27 @@ void Queue_Print(struct Node* pHead, struct Node* pTail, int& count)
 		else
 		{
 			Node* t;
-			for (t = pHead->next; t != NULL; t = t->next)
+			t = pHead->next;
+			for (int i=0; i<count; i++)
 			{
 				cout << "Значение равно = " << t->value
 					<< "\tЕго адрес = " << &*t
 					<< "\tЕго ключ = " << t->key << endl;
+				t = t->next;
 			}
 		}
-		cout << "\n\t\tАдрес первого элемента    = " << pHead->next << endl << endl;
-		cout << "\n\t\tАдрес последнего элемента = " << pTail << endl << endl;
-		cout << "\n\t\tКоличество элементов в очереди  = " << count << endl << endl;
+		if (pHead->next == NULL)
+		{
+			cout << "\n\t\tСписок пустой!\n\n";
+		}
+		else
+		{
+			cout << "\n\t\tАдрес pHead          = " << pHead << endl << endl;
+			cout << "\n\t\tАдрес pHead->next    = " << pHead->next << endl << endl;
+			cout << "\n\t\tАдрес pTail->next    = " << pTail->next << endl << endl;
+			cout << "\n\t\tКоличество элементов в очереди  = " << count << endl << endl;
+		}
+		
 	}
 }
 
@@ -209,13 +220,14 @@ Node* Queue_Add(struct Node* pHead, struct Node* pTail, int& count, int& Last_De
 
 		if (pHead->next == NULL)
 		{
-			
+
 			count++;
 			t = new (Node);
 			cout << "Введите значение: "; cin >> t->value;
-			t->next = NULL;
+			
 			t->key = count + 100;
 			pHead->next = t;
+			t->next = pHead->next;
 			pTail = t;
 
 		}
@@ -226,7 +238,7 @@ Node* Queue_Add(struct Node* pHead, struct Node* pTail, int& count, int& Last_De
 			t->next = new (Node);
 			t = t->next;
 			cout << "Введите значение: "; cin >> t->value;
-			t->next = NULL;
+			t->next = pHead->next;
 
 			if (Last_Del_Key == NULL)
 			{
@@ -269,7 +281,7 @@ Node* Queue_Del(struct Node* pHead, struct Node* pTail, int& count, int& Last_De
 
 			if (pTail == pHead->next)
 			{
-				pHead->next = t->next;
+				pHead->next = NULL;
 				pTail = pHead->next;
 				count--;
 				Last_Del_Key = t->key;
@@ -279,6 +291,7 @@ Node* Queue_Del(struct Node* pHead, struct Node* pTail, int& count, int& Last_De
 				pHead->next = t->next;
 				count--;
 				Last_Del_Key = t->key;
+				pTail->next = pHead->next;
 			}
 			delete t;
 			t = nullptr;
