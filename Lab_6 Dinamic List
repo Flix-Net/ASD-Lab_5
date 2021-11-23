@@ -425,6 +425,8 @@ Node* Add_List_After(struct Node* pHead, int& count, int& last_del_key)
 		}
 	}
 	return 0;
+
+
 }
 
 Node* Dell_List_Position(struct Node* pHead, int& count, int&last_del_key)
@@ -672,6 +674,7 @@ Node* Clear_List(struct Node* pHead, int& count)
 				pHead->next = t;
 				delete q;
 			}
+			count = 0;
 			cout << "\n\t\tСписок очищен!\n\n";
 		}
 	}
