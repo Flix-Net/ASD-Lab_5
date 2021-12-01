@@ -675,6 +675,7 @@ Node* Clear_List(struct Node* pHead, int& count)
 				delete q;
 			}
 			count = 0;
+			pHead = NULL;
 			cout << "\n\t\tСписок очищен!\n\n";
 		}
 	}
