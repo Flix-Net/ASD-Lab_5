@@ -14,7 +14,7 @@ void Print_List(struct Node* pHead, int& count, int& last_del_key);
 void Add_Tail_List(struct Node* pHead, int& count, int& last_del_key, int value);
 void Add_List_Position(struct Node* pHead, int& count, int& last_del_key, int value, int cin_position);
 void Add_List_Before(struct Node* pHead, int& count, int& last_del_key, int cin_value, struct Node* t);
-Node* Add_List_After(struct Node* pHead, int& count, int& last_del_key, int cin_value, struct Node* t);
+void Add_List_After(struct Node* pHead, int& count, int& last_del_key, int cin_value, struct Node* t);
 void Dell_List_Position(struct Node* pHead, int& count, int& last_del_key, int cin_position);
 void Dell_List_Before(struct Node* pHead, int& count, int& last_del_key, Node* t);
 void Dell_List_After(struct Node* pHead, int& count, int& last_del_key, Node* t);
@@ -23,7 +23,7 @@ Node* Find_Prev(struct Node* pHead, struct Node* t);
 Node* Clear_List(struct Node* pHead, int& count);
 int Set_Key(int& last_del_key, int& count);
 void Find_Key(struct Node* pHead);
-void Find_Position(struct Node* pHead, struct Node* t);
+void Find_Position(struct Node* pHead, int& count, int cin_value);
 Node* Find_Tail(struct Node* pHead, int &count);
 Node* Find_value(struct Node* pHead, int& count, int& cin_value);
 
@@ -309,6 +309,7 @@ case 12:
 {
 	system("cls");
 	int cin_value = 0;
+	cout << "Введите значение: "; cin >> cin_value;
 	Node* t;
 	t = Find_value(pHead, count, cin_value);
 	if (t == NULL)
@@ -317,7 +318,7 @@ case 12:
 	}
 	else
 	{
-		Find_Position(pHead,t);
+		Find_Position(pHead,count,cin_value);
 	}
 	
 	system("pause");
@@ -461,7 +462,7 @@ void Add_List_Before(struct Node* pHead, int& count, int& last_del_key, int cin_
 {
 	Node* q = t;
 
-	if (t->key == 101) // 101 - ключ первого элемента
+	if (t == pHead->next) 
 	{
 		t = new(Node);
 		t->value = cin_value;
@@ -486,7 +487,7 @@ void Add_List_Before(struct Node* pHead, int& count, int& last_del_key, int cin_
 	}
 }
 
-Node* Add_List_After(struct Node* pHead, int& count, int& last_del_key, int cin_value, struct Node* t)
+void Add_List_After(struct Node* pHead, int& count, int& last_del_key, int cin_value, struct Node* t)
 {			
 	Node* q = t->next;
 	t->next = new(Node);
@@ -496,7 +497,6 @@ Node* Add_List_After(struct Node* pHead, int& count, int& last_del_key, int cin_
 	t->key = Set_Key(last_del_key, count);
 	count++;
 	Refresh_Position(pHead,count);
-	return 0;
 }
 
 void Dell_List_Position(struct Node* pHead, int& count, int& last_del_key, int cin_position)
@@ -575,14 +575,13 @@ void Dell_List_Before(struct Node* pHead, int& count, int& last_del_key, Node* t
 
 void Dell_List_After(struct Node* pHead, int& count, int& last_del_key, Node* t)
 {
-	Node* del_value;
 	if (t->next == pHead->next)
 	{
 		cout << "\n\t\tПосле этого элемента удалять нечего!\n\n";
 	}
 	else
 	{
-		del_value = t->next;
+		Node* del_value = t->next;
 		t->next = del_value->next;
 		cout << "\n\t\tУдаляемое значение = " << del_value->value
 			<< "\tЕго адрес = " << del_value << "\tКлюч = " << del_value->key << endl;
@@ -597,7 +596,7 @@ void Dell_List_After(struct Node* pHead, int& count, int& last_del_key, Node* t)
 Node* Find_Prev(struct Node* pHead, struct Node* t)
 {
 	Node* q = t;
-	for (t = pHead->next; t != NULL; t = t->next)
+	for (t = pHead->next; t != pHead->next; t = t->next)
 	{
 		if (t->next == q)
 		{
@@ -690,7 +689,7 @@ void Find_Key(struct Node* pHead)
 	}
 }
 
-void Find_Position(struct Node* pHead, struct Node* t)
+void Find_Position(struct Node* pHead, int &count, int cin_value)
 {
 	if (pHead == NULL)
 	{
@@ -704,8 +703,21 @@ void Find_Position(struct Node* pHead, struct Node* t)
 		}
 		else
 		{
-			cout << "\n\t\tЭлемент найден!\n"
-				<< "\n\t\tЗначение = " << t->value << "\tПозиция = " << t->position << "\tКлюч = " << t->key << "\tАдрес = " << t << endl << endl;
+			int count_circle = 0;
+			cout << "Введите количество циклов: "; cin >> count_circle;
+			Node *t = pHead->next;
+			for (int i = 0; i < count_circle; i++)
+			{
+				for (int i = 0; i < count; i++)
+				{
+					if (t->value == cin_value)
+					{
+						cout << "\n\t\tЭлемент найден!\n"
+							<< "\n\t\tЗначение = " << t->value << "\tПозиция = " << t->position << "\tКлюч = " << t->key << "\tАдрес = " << t << endl << endl;
+					}
+					t = t->next;
+				}
+			}	
 		}
 	}
 }
